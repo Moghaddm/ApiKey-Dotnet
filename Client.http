@@ -1,1 +1,2 @@
-﻿GET http://
+﻿POST https://localhost:7079/weatherforecast/post
+Authorization : ApiKey <Your Logic Key Implemeted>

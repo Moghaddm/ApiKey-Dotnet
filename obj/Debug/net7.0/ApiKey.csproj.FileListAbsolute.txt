@@ -31,3 +31,5 @@ F:\MyProjects\ApiKey\obj\Debug\net7.0\refint\ApiKey.dll
 F:\MyProjects\ApiKey\obj\Debug\net7.0\ApiKey.pdb
 F:\MyProjects\ApiKey\obj\Debug\net7.0\ApiKey.genruntimeconfig.cache
 F:\MyProjects\ApiKey\obj\Debug\net7.0\ref\ApiKey.dll
+F:\MyProjects\ApiKey\obj\Debug\net7.0\ApiKey.Properties.Resources.resources
+F:\MyProjects\ApiKey\obj\Debug\net7.0\ApiKey.csproj.GenerateResource.cache

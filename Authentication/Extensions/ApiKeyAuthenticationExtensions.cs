@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 
 namespace ApiKey.Authentication.Extensions;
+// Dont See These Lot of Codes . Its Just About Depending into Program.cs Builder Services
 public static class ApiKeyAuthenticationExtensions
 {
      public static AuthenticationBuilder AddApiKey<TAuthService>(this AuthenticationBuilder builder)

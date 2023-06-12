@@ -1,9 +1,11 @@
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using ApiKey.Authentication.Defaults;
 using ApiKey.Authentication.Options;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.Extensions.Options;
 
 namespace ApiKey.Authentication.Handlers;
@@ -14,6 +16,14 @@ public class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeyAuthentic
     private const string ApiKeySchemeName = ApiKeyAuthenticationDefaults.AuthenticationScheme;
     private readonly IApiKeyAuthenticationService _authenticationService;
 
+    /// <summary>
+    /// All Of Dependencies For Authentication Handler
+    /// </summary>
+    /// <param name="options">Monitoring And Seeing Changes of Auth Instance</param>
+    /// <param name="logger">Just Logging Changes</param>
+    /// <param name="encoder">Encoding Auth Informations</param>
+    /// <param name="clock">Timing</param>
+    /// <param name="authenticationService">Main Defined Service For Check Requests With Abstract</param>
     public ApiKeyAuthenticationHandler(
         IOptionsMonitor<ApiKeyAuthenticationOptions> options,
         ILoggerFactory logger,
@@ -23,18 +33,21 @@ public class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeyAuthentic
     )
         : base(options: options, logger: logger, encoder: encoder, clock: clock) =>
         _authenticationService = authenticationService;
-
+    /// <summary>
+    /// Main Handle For Auth Header
+    /// </summary>
+    /// <returns></returns>
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        string apiKey;
         bool failed;
-        if (!CheckValidHeader(out apiKey, out failed))
+        string parameter;
+        if (!CheckValidHeader(out parameter, out failed))
             if (failed)
                 return AuthenticateResult.Fail("Missing Api-Key Token.");
             else
                 return AuthenticateResult.NoResult();
 
-        var isValid = await _authenticationService.IsValidAsync(apiKey);
+        var isValid = await _authenticationService.IsValidAsync(parameter);
 
         if (!isValid)
             return AuthenticateResult.Fail("Invalid Api-Key Token.");
@@ -46,13 +59,22 @@ public class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeyAuthentic
         
         return AuthenticateResult.Success(ticket);
     }
-
+    /// <summary>
+    /// Check When Request is 401 and its Possible To Modify that!
+    /// </summary>
+    /// <param name="properties">Auth Failed Props</param>
+    /// <returns></returns>
     protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
     {
-        Response.Headers["WWW-Authenticate"] = $"ApiKey \", charset=\"UTF-8\"";
+        Response.Headers["WWW-Authenticate"] = $"ApiKey , charset=\"UTF-8\"";
         await base.HandleChallengeAsync(properties);
     }
-
+    /// <summary>
+    /// Just Check The Header May Sent
+    /// </summary>
+    /// <param name="headerParameter">header Value Sended</param>
+    /// <param name="failed">Check The Operation is Failed?</param>
+    /// <returns></returns>
     private bool CheckValidHeader(out string headerParameter, out bool failed)
     {
         headerParameter = String.Empty;

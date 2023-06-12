@@ -1,12 +1,17 @@
+using ApiKey.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiKey.Controllers;
 
+// Just Add This Attribute (Scheme is Required!!!)
+[Authorize(AuthenticationSchemes = "ApiKey")]
 [ApiController]
 [Route("[controller]")]
 public class WeatherForecastController : ControllerBase
 {
+    private readonly IApiKeyAuthenticationService _authenticationService;
+
     private static readonly string[] Summaries = new[]
     {
         "Freezing",
@@ -23,17 +28,14 @@ public class WeatherForecastController : ControllerBase
 
     private readonly ILogger<WeatherForecastController> _logger;
 
-    public WeatherForecastController(ILogger<WeatherForecastController> logger)
-    {
-        _logger = logger;
-    }
+    public WeatherForecastController(
+        ILogger<WeatherForecastController> logger) => (_logger) = (logger);
 
-    [HttpPost("[action]",Name = nameof(Post))]
-    public IActionResult Post()
+    [HttpPost("[action]", Name = nameof(Post))]
+    public async Task<IActionResult> Post()
     {
-        return Ok();
+        return Ok("Authentication is Success Dude :)");
     }
-    [Authorize]
     [HttpGet(Name = "GetWeatherForecast")]
     public IEnumerable<WeatherForecast> Get()
     {
