@@ -1,6 +1,8 @@
 using ApiKey.Authentication;
 using ApiKey.Authentication.Defaults;
 using ApiKey.Authentication.Extensions;
+using ApiKey.Authentication.Handlers;
+using ApiKey.Authentication.Options;
 using ApiKey.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +28,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
+
+// app.UseAuthorization();
 
 app.MapControllers();
 
